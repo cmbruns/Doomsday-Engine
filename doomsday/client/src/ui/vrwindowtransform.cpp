@@ -121,7 +121,6 @@ DENG2_PIMPL(VRWindowTransform)
     {
         VR::applyFrustumShift = false;
 
-        /// @todo shrunken hud
         // Allocate offscreen buffers - larger than Oculus Rift size, to get adequate resolution at center after warp
         // For some reason, 1.5X looks best, even though objects are ~2.3X unwarped size at center.
         Canvas::Size textureSize(1920, 1200); // 1.5 * 1280x800
@@ -219,11 +218,11 @@ Vector2ui VRWindowTransform::logicalRootSize(Vector2ui const &physicalCanvasSize
         size *= .75f; // Make it a bit bigger.
         break;
 
+    // ADJUST RIFT MODE TASKBAR FONT SIZE HERE
     case VR::MODE_OCULUS_RIFT:
-        /// @todo - taskbar needs to elevate above bottom of screen in Rift mode
         // Adjust effective UI size for stereoscopic rendering.
         size.x = size.y * VR::riftState.aspect();
-        size *= 1.0f; // Use a large font in taskbar
+        size *= 0.8f; // Smaller number => larger font in taskbar
         break;
 
     // Allow UI to squish in top/bottom and SBS mode: 3D hardware will unsquish them

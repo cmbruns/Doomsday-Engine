@@ -547,7 +547,16 @@ DENG2_OBSERVES(App,              GameChange)
 
         if(VR::mode() == VR::MODE_OCULUS_RIFT)
         {
-            compositor->setCompositeProjection(Matrix4f::ortho(-1, 2, -1, 2));
+            // NOTE: This is not the place to kludge a depth offset, because this is called only once
+            // per frame. So where could one possibly put a depth offset? TODO
+            // compositor->setCompositeProjection(Matrix4f::ortho(0, 1, 0, 1)); // full HUD
+            // compositor->setCompositeProjection(Matrix4f::ortho(-1, 2, -1, 2)); // half size HUD?
+            const float margin = 1.2f; // Larger margin => smaller hud
+            compositor->setCompositeProjection(Matrix4f::ortho(
+                                                   0 - margin,   // x
+                                                   1 + margin,   // x
+                                                   0 - margin,   // y
+                                                   1 + margin)); // y
         }
         else
         {
