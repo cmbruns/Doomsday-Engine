@@ -53,6 +53,9 @@ class Map;
 
 #define SHADOW_SURFACE_LUMINOSITY_ATTRIBUTION_MIN (.05f)
 
+// vOrigin represents position of eyeball pupil,
+// distinct in stereo 3D modes from viewData->current.origin,
+// which represent position centered between players two eyes.
 DENG_EXTERN_C coord_t vOrigin[3];
 DENG_EXTERN_C float vang, vpitch, yfov;
 DENG_EXTERN_C float viewsidex, viewsidey;

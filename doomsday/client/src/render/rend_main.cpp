@@ -417,9 +417,6 @@ void Rend_ModelViewMatrix(bool useAngles)
 {
     viewdata_t const *viewData = R_ViewData(viewPlayer - ddPlayers);
 
-    vOrigin[VX] = viewData->current.origin[VX];
-    vOrigin[VY] = viewData->current.origin[VZ];
-    vOrigin[VZ] = viewData->current.origin[VY];
     vang = viewData->current.angle / (float) ANGLE_MAX *360 - 90;
     vpitch = viewData->current.pitch * 85.0 / 110.0;
 
@@ -428,6 +425,10 @@ void Rend_ModelViewMatrix(bool useAngles)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    // to be modified by head angles
+    float stereoOffset[] = {-VR::eyeShift, 0, 0};
+
     if(useAngles)
     {
         bool scheduledLate = false;
@@ -498,11 +499,27 @@ void Rend_ModelViewMatrix(bool useAngles)
         glRotatef(pitch, 1, 0, 0); // Pitch
         glRotatef(yaw, 0, 1, 0); // Yaw
 
+        // Modify stereo offset for late use after head angles are set
+        // (so offset is in world coordinates)
+        // Roll
+        stereoOffset[1] -= stereoOffset[0] * sin(de::degreeToRadian(roll)); // Y
+        stereoOffset[0] *= cos(de::degreeToRadian(roll)); // X
+        // NOTE Pitch angle has no effect on stereo eye position (at least until we implement full neck model)
+        // Yaw
+        stereoOffset[2] += stereoOffset[0] * sin(de::degreeToRadian(yaw)); // Z
+        stereoOffset[0] *= cos(de::degreeToRadian(yaw)); // X
+
         storedRoll = roll;
         storedPitch = pitch;
         storedYaw = yaw;
     }
+
     glScalef(1, 1.2f, 1);      // This is the aspect correction.
+
+    // Update view origin, for use by clipping methods
+    vOrigin[VX] = viewData->current.origin[VX] - stereoOffset[0];
+    vOrigin[VY] = viewData->current.origin[VZ] - stereoOffset[1];
+    vOrigin[VZ] = viewData->current.origin[VY] - stereoOffset[2];
     glTranslatef(-vOrigin[VX], -vOrigin[VY], -vOrigin[VZ]);
 }
 

@@ -624,8 +624,9 @@ void GL_ProjectionMatrix()
     glFrustum(-fW - frustumShift, fW - frustumShift,
               -fH, fH,
               glNearClip, glFarClip);
-    // Actually shift the player viewpoint
-    glTranslatef(-VR::eyeShift, 0, 0);
+
+    // NOTE: Moved eye shift from projection matrix to model view matrix Nov 28 2013 CMB
+    // See rend_main.cpp Rend_ModelViewMatrix()
 
     // We'd like to have a left-handed coordinate system.
     glScalef(1, 1, -1);
