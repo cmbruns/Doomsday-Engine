@@ -559,9 +559,11 @@ DENG2_OBSERVES(App,              StartupComplete)
             // compositor->setCompositeProjection(Matrix4f::ortho(0, 1, 0, 1)); // full HUD
             // compositor->setCompositeProjection(Matrix4f::ortho(-1, 2, -1, 2)); // half size HUD?
             const float margin = 1.2f; // Larger margin => smaller hud
+            // Kludge to adjust HUD/crosshair depth to less than infinity
+            float eyeOffset = 0.0025 * VR::eyeShift;
             compositor->setCompositeProjection(Matrix4f::ortho(
-                                                   0 - margin,   // x
-                                                   1 + margin,   // x
+                                                   0 - margin + eyeOffset,   // x
+                                                   1 + margin + eyeOffset,   // x
                                                    0 - margin,   // y
                                                    1 + margin)); // y
         }
@@ -852,6 +854,12 @@ void ClientWindow::updateRootSize()
 {
     // This will be done a bit later as the call may originate from another thread.
     d->needRootSizeUpdate = true;
+}
+
+// Exposing updateCompositor() publicly, so vrWindowTransform could call it per-eye.
+void ClientWindow::updateCompositor()
+{
+    d->updateCompositor();
 }
 
 ClientWindow &ClientWindow::main()

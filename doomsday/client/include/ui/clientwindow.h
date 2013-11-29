@@ -156,6 +156,7 @@ public:
 
     void updateCanvasFormat();
     void updateRootSize();
+    void updateCompositor();
 
     // Notifications.
     bool isFPSCounterVisible() const;

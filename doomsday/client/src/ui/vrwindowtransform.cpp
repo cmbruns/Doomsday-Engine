@@ -147,6 +147,7 @@ DENG2_PIMPL(VRWindowTransform)
         // Left eye view on left side of screen.
         VR::eyeShift = VR::getEyeShift(-1);
         unwarpedTarget->setActiveRect(Rectangleui(0, 0, textureSize.x/2, textureSize.y), true);
+        self.window().updateCompositor();
         drawContent();
 
         VR::holdViewPosition(); // Don't (late-schedule) change view direction between eye renders
@@ -154,6 +155,7 @@ DENG2_PIMPL(VRWindowTransform)
         // Right eye view on right side of screen.
         VR::eyeShift = VR::getEyeShift(+1);
         unwarpedTarget->setActiveRect(Rectangleui(textureSize.x/2, 0, textureSize.x/2, textureSize.y), true);
+        self.window().updateCompositor();
         drawContent();
 
         VR::releaseViewPosition(); // OK, you can change the viewpoint henceforth
