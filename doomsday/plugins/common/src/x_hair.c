@@ -94,7 +94,7 @@ void X_Drawer(int pnum)
 
     player_t* player = players + pnum;
     int xhair = MINMAX_OF(0, cfg.xhair, NUM_XHAIRS);
-    float scale, oldLineWidth, color[4];
+    float scale, oldLineWidth, color[4], lineScale;
     Point2Rawf origin;
     RectRaw win;
 
@@ -111,8 +111,13 @@ void X_Drawer(int pnum)
     origin.y = win.origin.y + (win.size.height / 2);
     scale = .125f + MINMAX_OF(0, cfg.xhairSize, 1) * .125f * win.size.height * ((float)80/SCREENHEIGHT);
 
+    // Increase line thickness in Rift mode, to compensate for tiny HUD scale
+    lineScale = 1.0f;
+    if (Con_GetInteger("rend-vr-mode") == 9) // Oculus Rift mode
+        lineScale = 4.0f;
+
     oldLineWidth = DGL_GetFloat(DGL_LINE_WIDTH);
-    DGL_SetFloat(DGL_LINE_WIDTH, XHAIR_LINE_WIDTH);
+    DGL_SetFloat(DGL_LINE_WIDTH, XHAIR_LINE_WIDTH * lineScale);
 
     currentColor(player, color);
     DGL_Color4fv(color);
