@@ -179,6 +179,7 @@ void VR::consoleRegister()
 {
     C_VAR_BYTE  ("rend-vr-autoload-rift-params", & autoLoadRiftParams, 0, 0, 1);
     C_VAR_FLOAT ("rend-vr-dominant-eye",     & VR::dominantEye,   0, -1.0f, 1.0f);
+    C_VAR_FLOAT ("rend-vr-current-eye-shift", & VR::eyeShift, CVF_READ_ONLY | CVF_NO_ARCHIVE, -10.0f, 10.0f);
     C_VAR_FLOAT ("rend-vr-hud-distance",     & VR::hudDistance,           0, 0.01f, 40.0f);
     C_VAR_FLOAT ("rend-vr-ipd",              & VR::ipd,           0, 0.02f, 0.2f);
     C_VAR_INT2  ("rend-vr-mode",             & vrMode,            0, 0, (int)(VR::MODE_MAX_3D_MODE_PLUS_ONE - 1), vrModeChanged);

@@ -113,8 +113,9 @@ void X_Drawer(int pnum)
 
     // Increase line thickness in Rift mode, to compensate for tiny HUD scale
     lineScale = 1.0f;
-    if (Con_GetInteger("rend-vr-mode") == 9) // Oculus Rift mode
+    if (Con_GetInteger("rend-vr-mode") == 9) { // Oculus Rift mode
         lineScale = 4.0f;
+    }
 
     oldLineWidth = DGL_GetFloat(DGL_LINE_WIDTH);
     DGL_SetFloat(DGL_LINE_WIDTH, XHAIR_LINE_WIDTH * lineScale);
