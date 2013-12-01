@@ -42,6 +42,8 @@
 
 #include "render/sprite.h"
 
+#include "render/vr.h"
+
 using namespace de;
 
 void Rend_RenderSprite(rendspriteparams_t const *params);
@@ -422,6 +424,33 @@ void Rend_Draw2DPlayerSprites(void)
             rendpspriteparams_t params;
 
             setupPSpriteParams(&params, spr);
+
+            // Modify weapon position and size in Rift mode
+            if (VR::mode() == VR::MODE_OCULUS_RIFT)
+            {
+                // Shrink weapon size for Rift mode
+                float weaponScale = 0.35f; // Make weapon this much smaller
+                // Maintain scaled weapon position relative to center of screen
+                const float screenCenterX = 160;
+                const float screenCenterY = 100;
+                // Vertical
+                params.pos[1] = screenCenterY - params.pos[1]; // Relative to center
+                params.pos[1] *= weaponScale;
+                params.pos[1] = screenCenterY - params.pos[1]; // Relative to top again
+                params.height *= weaponScale;
+                // Don't want weapon at bottom of screen, but rather at bottom of virtual 5:4 overlay
+                float aspect = viewpw / (float) viewph;
+                if (VR::mode() == VR::MODE_OCULUS_RIFT)
+                    aspect = VR::riftState.aspect();
+                if (aspect < 5.0/4.0)
+                    params.pos[1] -= screenCenterY * (5.0/(4.0*aspect) - 1.0f); // So shift from bottom toward center
+                // Horizontal
+                params.pos[0] = screenCenterX - weaponScale * (screenCenterX - params.pos[0]);
+                params.width *= weaponScale;
+                // Kludge weapon depth to approximate distance of a close wall
+                params.pos[0] -= 5.0f * VR::eyeShift;
+            }
+
             Rend_DrawPSprite(&params);
         }
     }

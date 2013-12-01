@@ -28,14 +28,14 @@ void main() {
                             hmdWarpParam.z * rSq * rSq + 
                             hmdWarpParam.w * rSq * rSq * rSq); 
    // Chromatic aberration correction 
-   vec2 thetaBlue = rvector * (chromAbParam.z + chromAbParam.w * rSq); 
+   vec2 thetaBlue = rvector * (chromAbParam.z + chromAbParam.w * rSq);
    vec2 tcBlue = inputCenter + scale * thetaBlue; 
    // Blue is farthest out 
    if ( (abs(tcBlue.x - 0.5) > 0.5) || (abs(tcBlue.y - 0.5) > 0.5) ) { 
         gl_FragColor = vec4(0, 0, 0, 1); 
         return; 
    } 
-   vec2 thetaRed = rvector * (chromAbParam.x + chromAbParam.y * rSq); 
+   vec2 thetaRed = rvector * (chromAbParam.x + chromAbParam.y * rSq);
    vec2 tcRed = inputCenter + scale * thetaRed; 
    vec2 tcGreen = inputCenter + scale * rvector; // green 
    tcRed.x *= 0.5; // because output only goes to 0-0.5 (left eye) 
@@ -45,10 +45,10 @@ void main() {
         tcRed.x = 1 - tcRed.x; 
         tcGreen.x = 1 - tcGreen.x; 
         tcBlue.x = 1 - tcBlue.x; 
-    } 
-    float red = texture2D(texture, tcRed).r; 
+    }
+    vec2 red = texture2D(texture, tcRed).ra;
     vec2 green = texture2D(texture, tcGreen).ga; 
-    float blue = texture2D(texture, tcBlue).b; 
+    vec2 blue = texture2D(texture, tcBlue).ba;
 
-    gl_FragColor = vec4(red, green.x, blue, green.y); 
+    gl_FragColor = vec4(red.x, green.x, blue.x, green.y);
 } 
